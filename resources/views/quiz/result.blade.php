@@ -26,6 +26,109 @@
         ->pluck('title', 'code');
 @endphp
 
+{{-- ── 全螢幕 AI 生成過場動畫（AI 未完成且已付款/免費時顯示）──────────── --}}
+@if ($isPaid && !$aiAnalysis)
+<div id="ai-generating-overlay"
+     style="position:fixed; inset:0; z-index:9999;
+            background: linear-gradient(135deg, #4f6ef7 0%, #7c3aed 50%, #ec4899 100%);"
+     class="flex flex-col items-center justify-center">
+
+    <div class="absolute inset-0 overflow-hidden pointer-events-none">
+        <div class="absolute w-40 h-40 rounded-full bg-white/5 -top-10 -left-10 animate-pulse"></div>
+        <div class="absolute w-32 h-32 rounded-full bg-white/5 top-1/3 -right-8 animate-pulse" style="animation-delay:1s"></div>
+        <div class="absolute w-24 h-24 rounded-full bg-white/5 bottom-20 left-1/4 animate-pulse" style="animation-delay:2s"></div>
+    </div>
+
+    <div class="relative text-center px-8 max-w-sm">
+        <div class="text-6xl mb-6" style="animation: spin 3s linear infinite; display:inline-block">✨</div>
+        <h2 class="text-white font-black text-2xl mb-3">正在分析你的答案</h2>
+        <p class="text-white/80 text-sm leading-relaxed mb-8">
+            AI 正在為你生成專屬洞察報告<br>通常需要 10–20 秒，請稍候...
+        </p>
+        <div class="w-64 h-1.5 bg-white/20 rounded-full overflow-hidden mx-auto mb-4">
+            <div id="ai-progress-bar" class="h-full bg-white rounded-full"
+                 style="width:0%; transition: width 20s cubic-bezier(0.1,0.4,0.8,1);"></div>
+        </div>
+        <p class="text-white/60 text-xs" id="ai-overlay-tip">分析你的性格模式中...</p>
+    </div>
+</div>
+
+<style>
+@keyframes spin { from{transform:rotate(0deg)} to{transform:rotate(360deg)} }
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    var overlay = document.getElementById('ai-generating-overlay');
+    if (!overlay) return;
+
+    // 啟動進度條
+    setTimeout(function() {
+        document.getElementById('ai-progress-bar').style.width = '90%';
+    }, 100);
+
+    // 輪播提示
+    var tips = ['分析你的性格模式中...','比對你的行為傾向...','理解你的內在動力...','生成專屬洞察報告...','整理你的優勢與盲點...','即將完成，再等一下...'];
+    var tipIdx = 0;
+    setInterval(function() {
+        tipIdx = (tipIdx + 1) % tips.length;
+        var el = document.getElementById('ai-overlay-tip');
+        el.style.opacity = '0';
+        setTimeout(function() { el.textContent = tips[tipIdx]; el.style.opacity = '1'; }, 300);
+    }, 3000);
+
+    // 輪詢 AI 是否完成
+    var endpoint = '{{ route('quiz.attempt.generate-ai', ['token' => $attempt->session_token]) }}';
+    var csrf = document.querySelector('meta[name="csrf-token"]').content;
+    var pollCount = 0;
+
+    function poll() {
+        pollCount++;
+        fetch(endpoint, {
+            method: 'POST',
+            headers: { 'X-CSRF-TOKEN': csrf, 'Accept': 'application/json' }
+        })
+        .then(function(r) { return r.json(); })
+        .then(function(data) {
+            if (data.status === 'done' && data.ai_analysis) {
+                // 進度條跑完
+                document.getElementById('ai-progress-bar').style.transition = 'width 0.5s ease';
+                document.getElementById('ai-progress-bar').style.width = '100%';
+                setTimeout(function() {
+                    overlay.style.transition = 'opacity 0.6s ease';
+                    overlay.style.opacity = '0';
+                    setTimeout(function() {
+                        overlay.style.display = 'none';
+                        // 更新 AI 卡片內容
+                        var aiCard = document.getElementById('ai-card');
+                        if (aiCard) {
+                            var aiBody = document.getElementById('ai-body');
+                            var aiIcon = document.getElementById('ai-icon');
+                            var aiBadge = document.getElementById('ai-status-badge');
+                            if (aiIcon) aiIcon.textContent = '✦';
+                            if (aiBadge) aiBadge.textContent = '專屬分析';
+                            if (aiBody) aiBody.innerHTML = '<div class="text-slate-700 leading-relaxed text-sm whitespace-pre-line">' +
+                                data.ai_analysis.replace(/</g,'&lt;').replace(/>/g,'&gt;') + '</div>';
+                        }
+                    }, 600);
+                }, 500);
+            } else if (pollCount < 12) {
+                setTimeout(poll, 5000);
+            } else {
+                overlay.style.display = 'none';
+            }
+        })
+        .catch(function() {
+            if (pollCount < 12) setTimeout(poll, 8000);
+            else overlay.style.display = 'none';
+        });
+    }
+
+    poll();
+});
+</script>
+@endif
+
 @if ($isPaid)
 @section('nav-extra')
 <div class="flex items-center gap-2 no-print">

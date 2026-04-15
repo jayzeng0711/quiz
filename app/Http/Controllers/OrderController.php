@@ -152,7 +152,8 @@ class OrderController extends Controller
     {
         $attempt = $this->resolveAttempt($token);
 
-        if (! $attempt->hasPaidOrder()) {
+        $isFreeQuiz = ($attempt->quiz->price == 0);
+        if (! $isFreeQuiz && ! $attempt->hasPaidOrder()) {
             return response()->json(['status' => 'not_paid'], 403);
         }
 

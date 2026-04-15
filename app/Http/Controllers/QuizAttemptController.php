@@ -169,25 +169,13 @@ class QuizAttemptController extends Controller
         $report = $attempt->report
             ?? $this->reportGenerator->generate($attempt);
 
-        // Generate AI for paid orders OR free quizzes (price = 0)
+        // For free quizzes: dispatch AI job if not yet generated
         $isFreeQuiz = ($attempt->quiz->price == 0);
-        $shouldGenerateAi = ($attempt->hasPaidOrder() || $isFreeQuiz)
-            && blank($report->rendered_content['ai_analysis'] ?? '');
-
-        if ($shouldGenerateAi) {
+        if ($isFreeQuiz && blank($report->rendered_content['ai_analysis'] ?? '')) {
             try {
-                $text = $this->ai->generatePersonalizedInsight($attempt);
-                if (! blank($text)) {
-                    $content                = $report->rendered_content ?? [];
-                    $content['ai_analysis'] = $text;
-                    $report->update(['rendered_content' => $content]);
-                    $report->refresh();
-                }
+                \App\Jobs\GenerateAiAnalysisJob::dispatch($report->id);
             } catch (\Throwable $e) {
-                Log::warning('Inline AI generation failed on result page', [
-                    'report_id' => $report->id,
-                    'error'     => $e->getMessage(),
-                ]);
+                Log::warning('AI job dispatch failed for free quiz', ['report_id' => $report->id]);
             }
         }
 
