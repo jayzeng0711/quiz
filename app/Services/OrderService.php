@@ -89,9 +89,8 @@ class OrderService
             ]);
         }
 
-        // 5. Send emails (also queued)
+        // 5. Send single combined email (report + order confirmation)
         $this->emailDelivery->sendReport($report);
-        $this->emailDelivery->sendOrderConfirmation($order);
     }
 
     public function markFailed(Order $order, ?string $reason = null): Order
