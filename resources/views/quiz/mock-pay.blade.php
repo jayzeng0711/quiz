@@ -38,7 +38,7 @@
     </div>
     <div class="px-6 py-5 flex justify-between items-center">
         <span class="font-semibold text-slate-700">付款金額</span>
-        <span class="text-2xl font-bold text-slate-900">NT$ {{ number_format($order->amount / 100) }}</span>
+        <span class="text-2xl font-bold text-slate-900">NT$ {{ number_format($order->amount) }}</span>
     </div>
 </div>
 
@@ -47,7 +47,7 @@
     @csrf
     <button type="submit"
         class="w-full bg-brand-500 hover:bg-brand-600 active:bg-brand-700 text-white font-semibold py-4 rounded-2xl text-base transition-colors shadow-lg shadow-brand-500/20 mb-3">
-        確認付款 NT$ {{ number_format($order->amount / 100) }}
+        確認付款 NT$ {{ number_format($order->amount) }}
     </button>
 </form>
 
