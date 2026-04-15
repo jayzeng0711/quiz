@@ -38,11 +38,95 @@
 
 @section('content')
 
+{{-- 過場動畫 overlay（只在最後一題提交時顯示）--}}
+@if ($questionNumber === $total)
+<div id="generating-overlay"
+     style="display:none; position:fixed; inset:0; z-index:9999;
+            background: linear-gradient(135deg, #4f6ef7 0%, #7c3aed 50%, #ec4899 100%);"
+     class="flex flex-col items-center justify-center">
+
+    {{-- 動態粒子背景 --}}
+    <div class="absolute inset-0 overflow-hidden pointer-events-none">
+        @for ($p = 0; $p < 12; $p++)
+        <div class="absolute rounded-full bg-white/10 animate-pulse"
+             style="width: {{ rand(40,120) }}px; height: {{ rand(40,120) }}px;
+                    top: {{ rand(0,90) }}%; left: {{ rand(0,90) }}%;
+                    animation-delay: {{ $p * 0.3 }}s; animation-duration: {{ rand(2,4) }}s;">
+        </div>
+        @endfor
+    </div>
+
+    {{-- 主體內容 --}}
+    <div class="relative text-center px-8">
+        {{-- 旋轉星星 --}}
+        <div class="text-6xl mb-6 inline-block" style="animation: spin 3s linear infinite;">✨</div>
+
+        <h2 class="text-white font-black text-2xl mb-3">正在分析你的答案</h2>
+        <p class="text-white/80 text-sm leading-relaxed mb-8">
+            AI 正在為你生成專屬洞察<br>
+            這通常需要 10–20 秒，請稍候...
+        </p>
+
+        {{-- 進度條動畫 --}}
+        <div class="w-64 h-1.5 bg-white/20 rounded-full overflow-hidden mx-auto mb-6">
+            <div id="progress-bar"
+                 class="h-full bg-white rounded-full"
+                 style="width:0%; transition: width 18s cubic-bezier(0.1,0.4,0.8,1);">
+            </div>
+        </div>
+
+        {{-- 輪播文字 --}}
+        <div class="text-white/70 text-xs" id="tip-text">分析你的性格模式中...</div>
+    </div>
+</div>
+
+<style>
+@keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+</style>
+
+<script>
+(function() {
+    var tips = [
+        '分析你的性格模式中...',
+        '比對你的行為傾向...',
+        '理解你的內在動力...',
+        '生成專屬洞察報告...',
+        '整理你的優勢與盲點...',
+        '即將完成，再等一下...',
+    ];
+    var tipIdx = 0;
+
+    window.__showGeneratingOverlay = function() {
+        var overlay = document.getElementById('generating-overlay');
+        overlay.style.display = 'flex';
+
+        // 啟動進度條
+        setTimeout(function() {
+            document.getElementById('progress-bar').style.width = '92%';
+        }, 100);
+
+        // 輪播提示文字
+        setInterval(function() {
+            tipIdx = (tipIdx + 1) % tips.length;
+            var el = document.getElementById('tip-text');
+            el.style.opacity = '0';
+            setTimeout(function() {
+                el.textContent = tips[tipIdx];
+                el.style.transition = 'opacity 0.5s';
+                el.style.opacity = '1';
+            }, 300);
+        }, 3000);
+    };
+})();
+</script>
+@endif
+
 <div x-data="{
     selected: '{{ $existingAnswer ? ($existingAnswer->selected_options[0] ?? '') : '' }}',
     direction: 'next',
     submitting: false,
     shake: false,
+    isLast: {{ $questionNumber === $total ? 'true' : 'false' }},
     submit(dir) {
         if (!this.selected) {
             this.shake = true;
@@ -52,6 +136,9 @@
         this.direction = dir;
         this.submitting = true;
         this.$refs.dirInput.value = dir;
+        if (this.isLast && dir === 'next' && typeof window.__showGeneratingOverlay === 'function') {
+            window.__showGeneratingOverlay();
+        }
         this.$refs.form.submit();
     }
 }" x-cloak>
