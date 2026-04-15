@@ -24,6 +24,8 @@ class FriendshipQuizSeeder extends Seeder
                 'tag'               => '友情測驗',
                 'estimated_minutes' => 5,
                 'tags'              => ['友情', '社交風格', '人際關係'],
+                'collection'        => 'relationship',
+                'collection_order'  => 2,
             ],
         ]);
 

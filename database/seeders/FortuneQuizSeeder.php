@@ -24,6 +24,8 @@ class FortuneQuizSeeder extends Seeder
                 'tag'               => '近期運勢',
                 'estimated_minutes' => 5,
                 'tags'              => ['運勢', '能量', '自我探索'],
+                'collection'        => 'energy',
+                'collection_order'  => 1,
             ],
         ]);
 

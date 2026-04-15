@@ -26,6 +26,8 @@ class QuizSeeder extends Seeder
                 'cover_image'       => null,
                 'estimated_minutes' => 5,
                 'tags'              => ['職場', '溝通', '人格特質'],
+                'collection'        => 'career',
+                'collection_order'  => 1,
             ],
         ]);
 

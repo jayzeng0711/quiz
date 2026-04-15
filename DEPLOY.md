@@ -123,7 +123,7 @@ sudo mysql
 
 ```sql
 CREATE DATABASE quiz CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
-CREATE USER 'quiz_user'@'localhost' IDENTIFIED BY 'YOUR_STRONG_PASSWORD';
+CREATE USER 'quiz_user'@'localhost' IDENTIFIED BY 'test1234';
 GRANT ALL PRIVILEGES ON quiz.* TO 'quiz_user'@'localhost';
 FLUSH PRIVILEGES;
 EXIT;
@@ -162,7 +162,7 @@ DB_HOST=127.0.0.1
 DB_PORT=3306
 DB_DATABASE=quiz
 DB_USERNAME=quiz_user
-DB_PASSWORD=YOUR_STRONG_PASSWORD    # 步驟 7 設定的密碼
+DB_PASSWORD=test1234
 
 QUEUE_CONNECTION=database           # 正式環境用 database
 

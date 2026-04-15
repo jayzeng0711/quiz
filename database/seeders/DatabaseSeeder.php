@@ -16,6 +16,8 @@ class DatabaseSeeder extends Seeder
             LoveQuizSeeder::class,
             FriendshipQuizSeeder::class,
             FortuneQuizSeeder::class,
+            PersonalityQuizSeeder::class,
+            AllNewQuizzesSeeder::class,
         ]);
     }
 }

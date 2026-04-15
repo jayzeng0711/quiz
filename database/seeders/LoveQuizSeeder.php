@@ -24,6 +24,8 @@ class LoveQuizSeeder extends Seeder
                 'tag'               => '愛情測驗',
                 'estimated_minutes' => 5,
                 'tags'              => ['愛情', '依附風格', '親密關係'],
+                'collection'        => 'relationship',
+                'collection_order'  => 1,
             ],
         ]);
 
