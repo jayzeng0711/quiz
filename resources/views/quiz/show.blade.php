@@ -74,17 +74,6 @@
                             <span class="text-xs font-semibold text-slate-400 uppercase tracking-wide">{{ $tag }}</span>
                         </div>
                         <h3 class="font-bold text-slate-800 text-sm leading-tight">{{ $quiz->title }}</h3>
-                        <div class="flex items-center gap-3 mt-1.5 text-xs text-slate-400">
-                            <span>{{ $quiz->questions_count }} 題題庫 · 每次隨機 10 題</span>
-                            @if ($dims > 0)
-                            <span class="text-violet-400">{{ $dims }} 維度雷達圖</span>
-                            @endif
-                            @if ($quiz->isFree())
-                            <span class="text-emerald-500 font-semibold">免費</span>
-                            @else
-                            <span class="text-amber-500 font-semibold">NT${{ number_format($quiz->price / 100) }}</span>
-                            @endif
-                        </div>
                     </div>
                     <form action="{{ route('quiz.start') }}" method="POST" class="shrink-0">
                         @csrf

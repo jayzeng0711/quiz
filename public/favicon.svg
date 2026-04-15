@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#4f6ef7"/>
+      <stop offset="100%" stop-color="#8b5cf6"/>
+    </linearGradient>
+  </defs>
+  <!-- Rounded square background -->
+  <rect width="64" height="64" rx="14" fill="url(#bg)"/>
+  <!-- Sparkle / star: 4-point star shape -->
+  <path d="M32 10 L34.5 27.5 L52 30 L34.5 32.5 L32 50 L29.5 32.5 L12 30 L29.5 27.5 Z"
+        fill="white" opacity="0.95"/>
+  <!-- Small dot top-right -->
+  <circle cx="46" cy="18" r="3" fill="white" opacity="0.7"/>
+  <!-- Small dot bottom-left -->
+  <circle cx="18" cy="46" r="2" fill="white" opacity="0.5"/>
+</svg>

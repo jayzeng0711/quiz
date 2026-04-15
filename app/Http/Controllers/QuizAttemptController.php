@@ -33,8 +33,9 @@ class QuizAttemptController extends Controller
     {
         $quiz = Quiz::findOrFail($request->quiz_id);
 
-        // Randomly select up to 10 questions from the quiz's full question pool
-        $selectedIds = $quiz->questions()
+        // Randomly select 10 questions from the full pool using a plain query
+        // (avoids the sort_order scope on the relationship interfering with RAND())
+        $selectedIds = \App\Models\QuizQuestion::where('quiz_id', $quiz->id)
             ->inRandomOrder()
             ->limit(10)
             ->pluck('id')

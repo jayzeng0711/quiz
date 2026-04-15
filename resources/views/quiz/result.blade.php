@@ -226,20 +226,42 @@
 </div>
 @endif
 
-{{-- Base report content --}}
+{{-- Base report content — show ~1/3, blur the rest unless paid --}}
 @if ($resultType->report_content)
-<div class="bg-white rounded-3xl border border-slate-100 shadow-sm p-6 mb-5 animate-fade-up"
-     style="animation-delay:.3s;
-            --tw-prose-headings: #1e293b;
-            --tw-prose-body: #475569;"
-     x-data="{ open: false }"
->
-    {{-- Always visible: title + first paragraph --}}
+<div class="bg-white rounded-3xl border border-slate-100 shadow-sm p-6 mb-5 animate-fade-up relative overflow-hidden"
+     style="animation-delay:.3s;">
+
     <div class="[&_h2]:text-xl [&_h2]:font-bold [&_h2]:text-slate-900 [&_h2]:mb-3
                 [&_h3]:text-base [&_h3]:font-semibold [&_h3]:text-slate-800 [&_h3]:mb-2 [&_h3]:mt-4
                 [&_ul]:list-disc [&_ul]:pl-5 [&_ul]:space-y-1 [&_li]:text-slate-600 [&_p]:text-slate-600 [&_p]:leading-relaxed [&_p]:mb-3">
         {!! $resultType->report_content !!}
     </div>
+
+    @if (! $isPaid)
+    {{-- Clean gradient fade + lock pill --}}
+    <div class="absolute inset-x-0 bottom-0 flex flex-col items-center justify-end pb-5"
+         style="height: 65%;
+                background: linear-gradient(
+                    to bottom,
+                    rgba(255,255,255,0)    0%,
+                    rgba(255,255,255,0.75) 35%,
+                    rgba(255,255,255,1)    65%,
+                    rgba(255,255,255,1)    100%
+                );">
+        {{-- Lock pill --}}
+        <a href="{{ route('quiz.attempt.unlock', ['token' => $attempt->session_token]) }}"
+           class="inline-flex items-center gap-2 bg-white border border-slate-200 shadow-md
+                  text-slate-600 text-xs font-semibold px-4 py-2.5 rounded-full
+                  hover:border-brand-400 hover:text-brand-600 hover:shadow-lg
+                  transition-all duration-200 cursor-pointer">
+            <svg class="w-3.5 h-3.5 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                      d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/>
+            </svg>
+            解鎖閱讀完整報告
+        </a>
+    </div>
+    @endif
 </div>
 @endif
 
