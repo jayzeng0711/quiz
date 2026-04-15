@@ -18,6 +18,10 @@ class ReportGenerationService
     {
         $existingReport = $attempt->report;
         if ($existingReport) {
+            // 如果已有報告但 order_id 尚未設定，補上
+            if ($order && ! $existingReport->order_id) {
+                $existingReport->update(['order_id' => $order->id]);
+            }
             return $existingReport;
         }
 
