@@ -24,7 +24,7 @@
 <div class="wrap">
   <div class="header">
     <h1>訂單付款確認</h1>
-    <p>職場溝通風格測驗</p>
+    <p>{{ $order->attempt->quiz->title }}</p>
   </div>
   <div class="body">
     <div class="status-pill">
@@ -38,7 +38,7 @@
       </tr>
       <tr>
         <td>付款金額</td>
-        <td>NT$ {{ number_format($order->amount / 100) }}</td>
+        <td>NT$ {{ number_format($order->amount) }}</td>
       </tr>
       <tr>
         <td>付款時間</td>
