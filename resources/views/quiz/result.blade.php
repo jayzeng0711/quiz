@@ -132,13 +132,13 @@ document.addEventListener('DOMContentLoaded', function() {
 @if ($isPaid)
 @section('nav-extra')
 <div class="flex items-center gap-2 no-print">
-    <a href="{{ route('share', ['shareToken' => $report->access_token]) }}" target="_blank"
+    <button onclick="shareResult()"
        class="inline-flex items-center gap-1.5 text-xs text-brand-600 border border-brand-200 bg-brand-50 hover:bg-brand-100 px-3 py-1.5 rounded-full transition-colors">
         <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z"/>
         </svg>
         分享
-    </a>
+    </button>
 </div>
 @endsection
 @endif
@@ -567,10 +567,10 @@ document.addEventListener('DOMContentLoaded', function() {
 
     {{-- Actions --}}
     <div class="flex flex-col gap-3 animate-fade-up no-print" style="animation-delay:.45s">
-        <a href="{{ route('share', ['shareToken' => $report->access_token]) }}" target="_blank"
-           class="block text-center py-3.5 rounded-2xl border-2 border-brand-400 text-brand-600 text-sm font-bold hover:bg-brand-50 transition-all active:scale-95">
+        <button onclick="shareResult()"
+           class="block w-full text-center py-3.5 rounded-2xl border-2 border-brand-400 text-brand-600 text-sm font-bold hover:bg-brand-50 transition-all active:scale-95">
             分享結果頁 🔗
-        </a>
+        </button>
         <a href="{{ route('quiz.show') }}"
            class="block text-center py-3 rounded-2xl border border-slate-200 text-slate-400 text-sm hover:bg-white transition-all">
             試試其他測驗
@@ -658,5 +658,38 @@ window.addEventListener('beforeprint', function() {
         el.style.transform = 'none';
     });
 });
+
+// ── 分享功能 ──────────────────────────────────────────────
+var shareUrl  = '{{ route('share', ['shareToken' => $report->access_token]) }}';
+var shareText = '我在心靈測驗測到「{{ $resultType->title }}」，快來測測你是什麼類型！';
+
+function shareResult() {
+    if (navigator.share) {
+        // 手機原生分享選單（LINE / FB / IG / 複製連結...）
+        navigator.share({
+            title: '心靈測驗 — ' + '{{ $resultType->title }}',
+            text:  shareText,
+            url:   shareUrl,
+        }).catch(function() {});
+    } else {
+        // 桌面瀏覽器：複製連結
+        navigator.clipboard.writeText(shareUrl).then(function() {
+            showToast('連結已複製！貼上分享給朋友 🎉');
+        }).catch(function() {
+            prompt('複製以下連結分享給朋友：', shareUrl);
+        });
+    }
+}
+
+function showToast(msg) {
+    var t = document.createElement('div');
+    t.textContent = msg;
+    t.style.cssText = 'position:fixed;bottom:24px;left:50%;transform:translateX(-50%);' +
+        'background:#1e293b;color:#fff;padding:10px 20px;border-radius:999px;font-size:13px;' +
+        'z-index:9999;opacity:0;transition:opacity .3s;white-space:nowrap;';
+    document.body.appendChild(t);
+    setTimeout(function(){ t.style.opacity='1'; }, 10);
+    setTimeout(function(){ t.style.opacity='0'; setTimeout(function(){ t.remove(); }, 300); }, 2500);
+}
 </script>
 @endpush
