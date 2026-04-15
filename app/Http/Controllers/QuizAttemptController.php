@@ -13,7 +13,6 @@ use App\Services\ReportGenerationService;
 use App\Services\ResultCalculationService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Illuminate\View\View;
 
@@ -170,21 +169,18 @@ class QuizAttemptController extends Controller
         $report = $attempt->report
             ?? $this->reportGenerator->generate($attempt);
 
-        // If paid but AI is missing, generate inline (blocks ~10s, runs only once)
-        if ($attempt->hasPaidOrder() && blank($report->rendered_content['ai_analysis'] ?? '')) {
+        // Generate AI for paid orders OR free quizzes (price = 0)
+        $isFreeQuiz = ($attempt->quiz->price == 0);
+        $shouldGenerateAi = ($attempt->hasPaidOrder() || $isFreeQuiz)
+            && blank($report->rendered_content['ai_analysis'] ?? '');
+
+        if ($shouldGenerateAi) {
             try {
                 $text = $this->ai->generatePersonalizedInsight($attempt);
                 if (! blank($text)) {
                     $content                = $report->rendered_content ?? [];
                     $content['ai_analysis'] = $text;
                     $report->update(['rendered_content' => $content]);
-
-                    if ($report->pdf_path) {
-                        Storage::disk('local')->delete($report->pdf_path);
-                        $report->update(['pdf_path' => null]);
-                    }
-                    $path = $this->reportGenerator->generatePdf($report);
-                    $this->reportGenerator->markGenerated($report, $path);
                     $report->refresh();
                 }
             } catch (\Throwable $e) {
