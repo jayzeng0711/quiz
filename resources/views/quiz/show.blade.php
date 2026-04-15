@@ -78,7 +78,7 @@
                     </div>
                     <div class="flex items-center gap-2 shrink-0">
                         <span class="text-xs text-white/70 bg-white/15 px-2.5 py-1 rounded-full">
-                            {{ $col['quizzes']->count() }} 套
+                            {{ $col['quizzes']->where('slug', '!=', 'daily-quick-quiz')->count() }} 套
                         </span>
                         <svg class="w-5 h-5 text-white transition-transform duration-300"
                              :class="open === '{{ $col['slug'] }}' ? 'rotate-180' : ''"
@@ -95,6 +95,7 @@
              x-collapse
              class="mt-2 space-y-2">
             @foreach ($col['quizzes'] as $quiz)
+            @if ($quiz->slug === 'daily-quick-quiz') @continue @endif
             @php
                 $qMeta  = $quiz->meta ?? [];
                 $emoji  = $qMeta['emoji'] ?? '🧩';
