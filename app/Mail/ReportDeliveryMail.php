@@ -18,12 +18,14 @@ class ReportDeliveryMail extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: '【職場溝通風格測驗】你的完整分析報告已送達',
+            subject: '【心靈測驗】你的完整分析報告已送達',
         );
     }
 
     public function content(): Content
     {
+        $this->report->loadMissing(['order', 'attempt.quiz', 'resultType']);
+
         return new Content(
             view: 'mail.report-delivery',
         );
