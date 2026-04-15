@@ -1,0 +1,36 @@
+# ============================================================
+# deploy/quiz-queue.service
+# Queue Worker 的 systemd 服務設定
+#
+# 使用方式：
+#   sudo cp /var/www/quiz/deploy/quiz-queue.service /etc/systemd/system/
+#   sudo systemctl daemon-reload
+#   sudo systemctl enable quiz-queue
+#   sudo systemctl start quiz-queue
+#
+# 查看狀態：sudo systemctl status quiz-queue
+# 查看日誌：sudo journalctl -u quiz-queue -f
+# ============================================================
+
+[Unit]
+Description=Quiz App - Laravel Queue Worker
+After=network.target mysql.service
+Requires=mysql.service
+
+[Service]
+User=www-data
+Group=www-data
+WorkingDirectory=/var/www/quiz
+ExecStart=/usr/bin/php artisan queue:work \
+    --sleep=3 \
+    --tries=5 \
+    --timeout=120 \
+    --queue=default
+Restart=on-failure
+RestartSec=5
+StandardOutput=syslog
+StandardError=syslog
+SyslogIdentifier=quiz-queue
+
+[Install]
+WantedBy=multi-user.target
