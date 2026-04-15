@@ -14,6 +14,44 @@
     </p>
 </div>
 
+{{-- 今日快速測驗 — 置頂特色卡片 --}}
+@php
+    $dailyQuiz = \App\Models\Quiz::where('slug', 'daily-quick-quiz')->where('is_active', true)->first();
+@endphp
+@if ($dailyQuiz)
+<div class="mb-6 animate-fade-up" style="animation-delay:40ms">
+    <div class="relative rounded-3xl overflow-hidden shadow-lg">
+        <div class="bg-gradient-to-r from-yellow-400 to-orange-500 p-5 relative overflow-hidden">
+            <div class="absolute -right-6 -top-6 w-28 h-28 rounded-full bg-white/10"></div>
+            <div class="absolute right-8 -bottom-5 w-16 h-16 rounded-full bg-white/10"></div>
+            {{-- 免費標籤 --}}
+            <div class="absolute top-4 right-4">
+                <span class="bg-white text-orange-500 text-xs font-black px-3 py-1 rounded-full shadow">免費</span>
+            </div>
+            <div class="flex items-center gap-3 mb-3 relative">
+                <span class="text-4xl">⚡</span>
+                <div>
+                    <p class="text-white/80 text-xs font-semibold mb-0.5">每天更新 · 2 分鐘</p>
+                    <h2 class="text-white font-black text-lg leading-tight">今日快速測驗</h2>
+                </div>
+            </div>
+            <p class="text-white/80 text-xs leading-relaxed relative mb-4">
+                10 道情境題，了解你今天的能量狀態與心理焦點
+            </p>
+            <form action="{{ route('quiz.start') }}" method="POST" class="relative">
+                @csrf
+                <input type="hidden" name="quiz_id" value="{{ $dailyQuiz->id }}">
+                <button type="submit"
+                    class="w-full bg-white text-orange-500 font-black text-sm py-3 rounded-2xl
+                           shadow-lg transition-all active:scale-95 hover:shadow-xl">
+                    馬上測測今天的狀態 →
+                </button>
+            </form>
+        </div>
+    </div>
+</div>
+@endif
+
 {{-- Collection cards --}}
 <div class="space-y-4" x-data="{ open: null }">
     @foreach ($collections as $col)

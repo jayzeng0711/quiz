@@ -2,7 +2,8 @@
 @section('title', '你的測驗結果 — ' . $resultType->title)
 
 @php
-    $isPaid        = $attempt->hasPaidOrder();
+    $isFree        = ($attempt->quiz->price == 0);
+    $isPaid        = $isFree || $attempt->hasPaidOrder();
     $order         = $attempt->order;
     $aiAnalysis    = $report->rendered_content['ai_analysis'] ?? '';
     $meta          = $attempt->quiz->meta ?? [];
@@ -502,7 +503,7 @@
         </p>
         <a href="{{ route('quiz.attempt.unlock', ['token' => $attempt->session_token]) }}"
            class="inline-block bg-gradient-to-r {{ $bg }} text-white font-bold px-8 py-3.5 rounded-2xl text-sm transition-all active:scale-95 shadow-lg">
-            解鎖完整版 NT${{ number_format($attempt->quiz->price / 100) }} →
+            解鎖完整版 NT${{ number_format($attempt->quiz->price) }} →
         </a>
         <p class="text-xs text-slate-400 mt-3">一次付清，報告永久保存</p>
     </div>
