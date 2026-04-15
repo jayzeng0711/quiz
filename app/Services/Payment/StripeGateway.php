@@ -55,11 +55,15 @@ class StripeGateway implements GatewayContract
             ]],
             'customer_email'   => $order->email,
             'client_reference_id' => $order->order_number,
-            'success_url'      => route('payment.stripe.success', [
-                'token'       => $order->attempt->session_token,
-                'order'       => $order->order_number,
-                'session_id'  => '{CHECKOUT_SESSION_ID}',
-            ]),
+            'success_url'      => str_replace(
+                'STRIPE_SESSION_PLACEHOLDER',
+                '{CHECKOUT_SESSION_ID}',
+                route('payment.stripe.success', [
+                    'token'      => $order->attempt->session_token,
+                    'order'      => $order->order_number,
+                    'session_id' => 'STRIPE_SESSION_PLACEHOLDER',
+                ])
+            ),
             'cancel_url'       => route('quiz.attempt.unlock', [
                 'token' => $order->attempt->session_token,
             ]),
