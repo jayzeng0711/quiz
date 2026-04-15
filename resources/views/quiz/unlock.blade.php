@@ -76,7 +76,7 @@
     <p class="text-slate-400 text-sm mb-1">一次付清，永久保存</p>
     <div class="flex items-end justify-center gap-1 mb-1">
         <span class="text-slate-400 text-lg">NT$</span>
-        <span class="text-5xl font-bold text-slate-900">{{ number_format($attempt->quiz->price / 100) }}</span>
+        <span class="text-5xl font-bold text-slate-900">{{ number_format($attempt->quiz->price) }}</span>
     </div>
     <p class="text-slate-400 text-xs">報告連結不會過期</p>
 </div>

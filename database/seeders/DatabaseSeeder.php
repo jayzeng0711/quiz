@@ -22,6 +22,7 @@ class DatabaseSeeder extends Seeder
             LifeDirectionDeepContentSeeder::class,
             DeepContentPart1Seeder::class,
             DeepContentPart2Seeder::class,
+            InteractionTipsSeeder::class,
         ]);
     }
 }
