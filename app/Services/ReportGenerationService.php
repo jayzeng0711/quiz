@@ -5,9 +5,7 @@ namespace App\Services;
 use App\Models\Order;
 use App\Models\QuizAttempt;
 use App\Models\Report;
-use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
-use HeadlessChromium\BrowserFactory;
 
 class ReportGenerationService
 {
@@ -75,57 +73,4 @@ class ReportGenerationService
         return $report;
     }
 
-    /**
-     * Render the result page as a PDF using headless Chrome (chrome-php/chrome).
-     * Chrome renders with system fonts — Traditional Chinese is perfect.
-     * No Node.js required.
-     */
-    public function generatePdf(Report $report): string
-    {
-        $report->loadMissing(['attempt', 'resultType', 'order']);
-
-        $token   = $report->attempt->session_token;
-        $pageUrl = url("/quiz/{$token}/result");
-
-        $path     = 'reports/' . $report->access_token . '.pdf';
-        $fullPath = storage_path('app/private/' . $path);
-
-        if (! is_dir(dirname($fullPath))) {
-            mkdir(dirname($fullPath), 0755, true);
-        }
-
-        $factory = new BrowserFactory(
-            '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome'
-        );
-
-        $browser = $factory->createBrowser([
-            'noSandbox'        => true,
-            'ignoreCertErrors' => true,
-        ]);
-
-        try {
-            $page = $browser->createPage();
-            $page->navigate($pageUrl)->waitForNavigation('networkIdle');
-
-            // Wait for fonts and charts to render
-            sleep(2);
-
-            // A4: 210mm × 297mm in inches = 8.27 × 11.69
-            $pdf = $page->pdf([
-                'printBackground' => true,
-                'paperWidth'      => 8.27,
-                'paperHeight'     => 11.69,
-                'marginTop'       => 0.4,
-                'marginBottom'    => 0.4,
-                'marginLeft'      => 0.4,
-                'marginRight'     => 0.4,
-            ]);
-
-            $pdf->saveToFile($fullPath);
-        } finally {
-            $browser->close();
-        }
-
-        return $path;
-    }
 }

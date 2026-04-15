@@ -1,0 +1,90 @@
+================================================================
+  soulquiz.fit — 服務配置總整理
+  更新日期：2026-04-15
+================================================================
+
+【GCP Compute Engine（VM 主機）】
+  控制台：https://console.cloud.google.com
+  VM 名稱：instance-20260415-013614
+  IP 位址：34.29.194.127（靜態 IP）
+  規格：e2-small / Ubuntu 22.04 LTS / 20GB
+  Region：us-central1
+
+----------------------------------------------------------------
+
+【網域（Namecheap）】
+帳號kobe830711
+密碼love0711
+  控制台：https://www.namecheap.com
+  網域：soulquiz.fit
+  DNS 設定：
+    A Record  @    → 34.29.194.127
+    A Record  www  → 34.29.194.127
+  SSL 憑證：Let's Encrypt（到期 2026-07-14，自動續期）
+
+----------------------------------------------------------------
+
+【OpenAI】
+  控制台：https://platform.openai.com
+  用途：AI 個人化報告生成
+  模型：gpt-4o-mini
+  Key 位置：/var/www/quiz/.env → OPENAI_API_KEY
+
+----------------------------------------------------------------
+
+【Resend（寄信服務）】
+  控制台：https://resend.com
+  用途：寄送訂單確認信、報告連結
+  Key 位置：/var/www/quiz/.env → RESEND_API_KEY
+  狀態：已驗證（soulquiz.fit Domain verified）
+  寄件地址：noreply@soulquiz.fit
+  可寄給任何信箱，免費方案每月 3000 封
+
+----------------------------------------------------------------
+
+【Stripe（收款）】
+  控制台：https://dashboard.stripe.com
+  ⚠️  目前尚未設定（使用模擬付款）
+  待辦：申請帳號後填入 .env：
+        STRIPE_KEY=pk_live_xxx
+        STRIPE_SECRET=sk_live_xxx
+        STRIPE_WEBHOOK_SECRET=whsec_xxx
+
+----------------------------------------------------------------
+
+【GitHub（程式碼）】
+  Repository：jayzeng0711/quiz
+  Branch：main
+  更新流程：
+    本地：git add . && git commit -m "..." && git push origin main
+    VM：cd /var/www/quiz && git pull origin main && bash deploy/after-pull.sh
+
+----------------------------------------------------------------
+
+【VM 重要路徑】
+  網站目錄：/var/www/quiz
+  環境設定：/var/www/quiz/.env
+  Nginx 設定：/etc/nginx/sites-available/quiz
+  SSL 憑證：/etc/letsencrypt/live/soulquiz.fit/
+  錯誤日誌：/var/www/quiz/storage/logs/laravel.log
+  Queue Worker：systemctl status quiz-queue
+
+----------------------------------------------------------------
+
+【常用 VM 指令】
+  # 重啟所有服務
+  systemctl restart nginx php8.4-fpm mysql quiz-queue
+
+  # 查看錯誤
+  tail -f /var/www/quiz/storage/logs/laravel.log
+
+  # 補跑 AI 報告
+  cd /var/www/quiz && php artisan quiz:fill-ai
+
+  # 資料庫備份
+  mysqldump -u quiz_user -p quiz > ~/backup_$(date +%Y%m%d).sql
+
+  # SSL 憑證手動更新
+  certbot renew
+
+================================================================

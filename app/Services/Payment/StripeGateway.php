@@ -45,7 +45,7 @@ class StripeGateway implements GatewayContract
             'line_items'           => [[
                 'price_data' => [
                     'currency'     => strtolower($order->currency),
-                    'unit_amount'  => $order->amount,
+                    'unit_amount'  => $order->amount * 100,
                     'product_data' => [
                         'name'        => $order->attempt->quiz->title . ' — 完整版報告',
                         'description' => '個人化職場溝通風格完整分析報告',
