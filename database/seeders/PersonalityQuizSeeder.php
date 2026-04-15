@@ -15,7 +15,7 @@ class PersonalityQuizSeeder extends BaseQuizSeeder
             'title'       => '你的人格探索',
             'description' => '100 道多元情境題，每次隨機抽取 10 題，揭開你最核心的人格特質與行為傾向。',
             'slug'        => 'personality-explorer',
-            'price'       => 4900,
+            'price'       => 19,
             'meta'        => [
                 'emoji'             => '🧠',
                 'card_bg'           => 'from-brand-500 to-violet-500',

@@ -15,7 +15,7 @@ class LoveQuizSeeder extends Seeder
             'title'       => '你的愛情依附風格',
             'description' => '10 道戀愛情境題，揭開你在愛情中的相處模式，了解你如何依附、如何給予與接受愛。',
             'slug'        => 'love-attachment-style',
-            'price'       => 4900,
+            'price'       => 19,
             'is_active'   => true,
             'meta'        => [
                 'emoji'             => '💕',

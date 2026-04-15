@@ -47,7 +47,7 @@ class AllNewQuizzesSeeder extends Seeder
             'title'       => $config['title'],
             'description' => $config['description'],
             'slug'        => $config['slug'],
-            'price'       => $config['price'] ?? 4900,
+            'price'       => $config['price'] ?? 19,
             'is_active'   => true,
             'meta'        => $config['meta'],
         ]);

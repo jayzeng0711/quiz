@@ -15,7 +15,7 @@ class FortuneQuizSeeder extends Seeder
             'title'       => '你現在的能量狀態是什麼？',
             'description' => '10 道反思題，感知你目前的生命能量與內在狀態，找出最適合你現在的前進方式。',
             'slug'        => 'energy-state',
-            'price'       => 4900,
+            'price'       => 19,
             'is_active'   => true,
             'meta'        => [
                 'emoji'             => '🔮',

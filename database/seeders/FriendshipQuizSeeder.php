@@ -15,7 +15,7 @@ class FriendshipQuizSeeder extends Seeder
             'title'       => '你在朋友圈中扮演什麼角色？',
             'description' => '10 道友情情境題，找出你在友誼中最自然的姿態，了解你如何連結、支持，並影響你身邊的人。',
             'slug'        => 'friendship-role',
-            'price'       => 4900,
+            'price'       => 19,
             'is_active'   => true,
             'meta'        => [
                 'emoji'             => '🫂',

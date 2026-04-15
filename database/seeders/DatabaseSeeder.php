@@ -18,6 +18,10 @@ class DatabaseSeeder extends Seeder
             FortuneQuizSeeder::class,
             PersonalityQuizSeeder::class,
             AllNewQuizzesSeeder::class,
+            TenDimensionsDeepContentSeeder::class,
+            LifeDirectionDeepContentSeeder::class,
+            DeepContentPart1Seeder::class,
+            DeepContentPart2Seeder::class,
         ]);
     }
 }

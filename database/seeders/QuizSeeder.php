@@ -16,7 +16,7 @@ class QuizSeeder extends Seeder
             'title' => '你的職場溝通風格測驗',
             'description' => '透過 10 道情境題，找出你在職場中的溝通風格與人際相處模式，並獲得專屬分析報告。',
             'slug' => 'workplace-communication-style',
-            'price' => 1900,
+            'price' => 19,
             'is_active' => true,
             'meta' => [
                 'emoji'             => '💼',
