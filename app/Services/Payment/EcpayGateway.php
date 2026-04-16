@@ -110,7 +110,15 @@ class EcpayGateway implements GatewayContract
             $encoded
         );
 
-        return strtoupper(hash('sha256', $encoded));
+        $result = strtoupper(hash('sha256', $encoded));
+
+        \Illuminate\Support\Facades\Log::debug('ECPay CheckMac', [
+            'raw'     => $raw,
+            'encoded' => $encoded,
+            'result'  => $result,
+        ]);
+
+        return $result;
     }
 
     /** ECPay MerchantTradeNo must be <= 20 chars, alphanumeric only */
