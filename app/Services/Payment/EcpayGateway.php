@@ -44,7 +44,7 @@ class EcpayGateway implements GatewayContract
             'MerchantTradeNo'   => $this->sanitizeOrderNumber($order->order_number),
             'MerchantTradeDate' => now()->format('Y/m/d H:i:s'),
             'PaymentType'       => 'aio',
-            'TotalAmount'       => (int) round($order->amount / 100),
+            'TotalAmount'       => (int) round($order->amount),
             'TradeDesc'         => urlencode($order->attempt->quiz->title . ' 完整版報告'),
             'ItemName'          => $order->attempt->quiz->title . ' 完整版報告',
             'ReturnURL'         => route('payment.webhook'),
