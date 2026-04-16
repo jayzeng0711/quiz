@@ -94,14 +94,19 @@ class EcpayGateway implements GatewayContract
     {
         ksort($params);
 
-        $query = http_build_query($params, '', '&', PHP_QUERY_RFC3986);
+        // Build query string with RAW values (no pre-encoding)
+        $parts = [];
+        foreach ($params as $k => $v) {
+            $parts[] = $k . '=' . $v;
+        }
+        $query = implode('&', $parts);
         $raw   = "HashKey={$this->hashKey}&{$query}&HashIV={$this->hashIv}";
 
-        // ECPay-specific URL encode: lowercase, replace special chars
+        // ECPay spec: urlencode entire string, lowercase, then restore safe chars
         $encoded = strtolower(urlencode($raw));
         $encoded = str_replace(
-            ['%2d', '%5f', '%2e', '%21', '%2a', '%28', '%29'],
-            ['-',   '_',   '.',   '!',   '*',   '(',   ')'],
+            ['%2d', '%5f', '%2e', '%21', '%2a', '%28', '%29', '%20'],
+            ['-',   '_',   '.',   '!',   '*',   '(',   ')',   '+'],
             $encoded
         );
 
