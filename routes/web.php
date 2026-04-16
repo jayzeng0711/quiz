@@ -56,8 +56,9 @@ Route::post('/webhook/payment', [PaymentWebhookController::class, 'handle'])
     ->name('payment.webhook')
     ->withoutMiddleware([\Illuminate\Foundation\Http\Middleware\VerifyCsrfToken::class]);
 
-Route::get('/quiz/{token}/payment/return', [PaymentWebhookController::class, 'returnRedirect'])
-    ->name('payment.return');
+Route::match(['GET', 'POST'], '/quiz/{token}/payment/return', [PaymentWebhookController::class, 'returnRedirect'])
+    ->name('payment.return')
+    ->withoutMiddleware([\Illuminate\Foundation\Http\Middleware\VerifyCsrfToken::class]);
 
 // Stripe success redirect — verifies session directly, no webhook needed locally
 Route::get('/quiz/{token}/payment/stripe/success', [PaymentWebhookController::class, 'stripeSuccess'])
